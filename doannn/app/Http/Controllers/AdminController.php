@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Session;
+use Hash;
 use Illuminate\Support\Facades\Redirect;
 session_start();
 class AdminController extends Controller
@@ -19,12 +20,20 @@ class AdminController extends Controller
     }
     public function dashboard(Request $request){
     	$taikhoan=$request->taikhoan;
-    	$matkhau=$request->matkhau;
-    	$result=DB::table('canbo')->where ('taikhoan',$taikhoan)->where ('matkhau',$matkhau)->first();
+    	
+
+
+    	$result=DB::table('canbo')->where ('taikhoan',$taikhoan)->first();
     	if($result){
-    		Session::put('ten',$result->ten);
-    		Session::put('macb',$result->macb);
-    		return Redirect::to('/dashboard');
+            if(Hash::check($request->matkhau,$result->matkhau))
+                {
+                    return Redirect::to('/dashboard');
+                }
+                else
+                {
+                   return Redirect::to('/admin');
+                }
+    		
     	}else{
     		Session::put('message','Mật khẩu ngoặc tài khoản bị sai');
     		return Redirect::to('/admin');

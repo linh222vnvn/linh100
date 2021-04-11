@@ -14,19 +14,18 @@
     }
     ?>
     <div class="row w3-res-tb">
-      <div class="col-sm-5 m-b-xs">
-        <div class="input-group">
-         <input type="number" id="txSoto"  placeholder="Số tờ..." value="811" />
-         <input type="number" id="txtSothua" placeholder="Số thửa..." value="2779" />
-         <button id="btnTimthua" class='btn btn-sm btn-default'>Tìm thửa</button>
-       </div>              
-     </div>
-     <div class="col-sm-4">
-      <h3 align="center">Total Data: <span
-        id="total_records"></span></h3>
+      <div class="col-sm-3 m-b-xs">
+       <div class="input-group">
+          <input type="text" class="input-sm form-control" placeholder="Search">
+          <span class="input-group-btn">
+            <button class="btn btn-sm btn-default" type="button" id='btnTim'>Go!</button>
+          </span>
+        </div>
+             
       </div>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
       </div>
+      
     </div>
     <div class="table-responsive" id="load">
       <table class="table table-striped b-t b-light">
@@ -43,22 +42,32 @@
             <th>Số tờ </th>
             <th> Số thửa </th>
             <th>Địa chỉ</th>
-            <th>Mục Đích </th>
             <th>Cán Bô</th>
+
+            <th>Công Cụ</th>
+
             <th style="width:30px;"></th>
           </tr>
         </thead>
         <tbody>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-
-
+          <?php $no=1?>
+          @foreach($all_category as $key=>$cate_pro)
+          <tr>
+            <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
+            <td>{{$no++}}</td>
+            <td>{{$cate_pro->tenkhudat}}</td>
+          
+            <td>{{$cate_pro->sohieutobando}}</td>
+            <td>{{$cate_pro->sothututhua}}</td>
+             <td>{{$cate_pro->diachi}}</td>
+             <td>
+               <a href="" class="btn btn-primary">Detail</a> 
+               <a href="" data-toggle="modal" data-target="" class="btn btn-success ">Update</a> 
+               <a onclick="return confirm('Are you sure delete?')" href="" class="btn btn-danger">Delete</a> 
+             </td>
+           
+         </tr>
+         @endforeach
        </tbody>
      </table>
    </div>
@@ -82,5 +91,4 @@
   </footer>
 </div>
 </div>
-
 @endsection

@@ -73,8 +73,12 @@
               <input type="date" class="form-control" name='ngaysinh' placeholder="Enter email">
             </div>
             <div class="form-group">
-              <label>Giới Tính</label>
-              <input type="text" class="form-control" name='gioitinh' placeholder="Enter email">
+               <label for="gioitinh">Phường:</label>
+                <select id="gioitinh" name="gioitinh">
+                 
+                 <option value="Nam"> Nam</option>
+                 <option value="Nữ"> Nữ</option>
+               </select>
             </div>
             <div class="form-group">
               <label>Email</label>
@@ -125,6 +129,76 @@
     <?php
     $sua=$cate_pro->macb.'sua';
     ?>
+    <!--  Editmodal-->
+    <div class="modal fade" id="{{$sua}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{{route('edit-user')}}" method="POST">
+            {{csrf_field()}}
+
+            <div class="modal-body">
+              <input type="hidden" value="{{$cate_pro->macb}}" name="macb" >
+              <div class="form-group">
+                <label>Tên</label>
+                <input type="text" class="form-control" id='ten'name='ten' value="{{$cate_pro->ten}}" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>Họ</label>
+                <input type="text" class="form-control"  id='ho' name='ho' value="{{$cate_pro->ho}}" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>CMND</label>
+                <input type="text" class="form-control"  id='cmnd' name='cmnd' value="{{$cate_pro->cmnd}}" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>Địa Chỉ</label>
+                <input type="text" class="form-control"  id='diachi' name='diachi' value="{{$cate_pro->diachi}}" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>SDT</label>
+                <input type="text" class="form-control"  id='sdt' name='sdt' value="{{$cate_pro->sdt}}" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>Ngày Sinh</label>
+                <input type="date" class="form-control"  id='ngaysinh' value="{{$cate_pro->ngaysinh}}" name='ngaysinh' placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                  <label for="gioitinh">Phường:</label>
+                <select id="gioitinh" name="gioitinh">
+                 
+                 <option value="Nam" @if ($cate_pro->gioitinh=="Nam") selected  @endif > Nam</option>
+                 <option value="Nữ" @if ($cate_pro->gioitinh=="Nữ") selected  @endif> Nữ</option>
+                 
+               </select>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="text" class="form-control"  id='email' value="{{$cate_pro->email}}" name='email' placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>Tài Khoản</label>
+                <input type="text" class="form-control"  id='taikhoan' value="{{$cate_pro->taikhoan}}" name='taikhoan' placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label>Mật Khẩu</label>
+                <input type="password" class="form-control" id='matkhau'value="{{$cate_pro->matkhau}}" name='matkhau' placeholder="Enter email">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit"  class="btn btn-primary" >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- endmodal -->
     <tr>
 
       <td>{{$no++}}</td>
@@ -140,7 +214,7 @@
 
       <td>
        <a href="" class="btn btn-primary">Detail</a> 
-       <a href="" data-toggle="modal" data-target="{{$sua}}" class="btn btn-success ">Edit</a> 
+       <a href="" data-toggle="modal" data-target="#{{$sua}}" class="btn btn-success ">Edit</a> 
        <a onclick="return confirm('Are you sure delete?')" href="{{URL::to('/delete-user/'.$cate_pro->macb)}}" class="btn btn-danger">Delete</a> 
      </td>
 
@@ -171,69 +245,5 @@
 </footer>
 </div>
 </div>
-<!--  Editmodal-->
-<div class="modal fade" id="{{$sua}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form name='searchdata' id="update_form">
-        {{csrf_field()}}
-        
-        <div class="modal-body">
 
-          <div class="form-group">
-            <label>Tên</label>
-            <input type="text" class="form-control" id='ten'name='ten' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Họ</label>
-            <input type="text" class="form-control"  id='ho' name='ho' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>CMND</label>
-            <input type="text" class="form-control"  id='cmnd' name='cmnd' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Địa Chỉ</label>
-            <input type="text" class="form-control"  id='diachi' name='diachi' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>SDT</label>
-            <input type="text" class="form-control"  id='sdt' name='sdt' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Ngày Sinh</label>
-            <input type="date" class="form-control"  id='ngaysinh' name='ngaysinh' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Giới Tính</label>
-            <input type="text" class="form-control" id='gioitinh' name='gioitinh' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control"  id='email' name='email' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Tài Khoản</label>
-            <input type="text" class="form-control"  id='taikhoan' name='taikhoan' placeholder="Enter email">
-          </div>
-          <div class="form-group">
-            <label>Mật Khẩu</label>
-            <input type="text" class="form-control" id='matkhau' name='matkhau' placeholder="Enter email">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit"  class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<!-- endmodal -->
 @endsection

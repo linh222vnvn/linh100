@@ -106,7 +106,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </a>
                     <ul class="sub">
                       <li><a href="{{URL::to('/add-category')}}">Quản Lý Đất Công</a></li>
-                      <li><a href="{{URL::to('/all-category')}}">Liệt Kê</a></li>
+                      <li><a href="{{route('all-category')}}">Liệt Kê</a></li>
                        <li><a href="{{route('mucdich')}}">Danh Mục Mục Đích</a></li>
                       
                   </ul>
@@ -159,6 +159,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script src="{{asset('public/backend/js/raphael-min.js')}}"></script>
 <script src="{{asset('public/backend/js/morris.js')}}"></script>
 <script src="{{asset('public/backend/js/handling.js')}}"></script>
+<script src="{{asset('public/backend/js/timkiem.js')}}"></script>
 <script src="{{asset('public/backend/js/bootstrap.js')}}"></script>
 <script src="{{asset('public/backend/js/bootstrap.min.js')}}"></script>
 <script src="{{asset('public/backend/js/jquery.dcjqaccordion.2.7.js')}}"></script>

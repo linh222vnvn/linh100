@@ -2,7 +2,6 @@ $(document).ready(function() {
     var container = document.getElementById('popup');
     var content = document.getElementById('popup-content');
     var closer = document.getElementById('popup-closer');
-    var body = document.getElementById('modal-content')
     var startPoint = new ol.Feature();
     var destPoint = new ol.Feature();
     var result;
@@ -47,7 +46,7 @@ $(document).ready(function() {
             }
         })
     });
-
+     var CQLFilter = "trangthai=1";
     var ThuaDat = new ol.layer.Image({
         source: new ol.source.ImageWMS({
             ratio: 1,
@@ -57,26 +56,38 @@ $(document).ready(function() {
                 'VERSION': '1.1.1',
                 STYLES: '',
                 LAYERS: 'QHBD:thuadat_phumy',
-                
+                'CQL_Filter': CQLFilter,
             }
         })
     });
 
+    var Duong = new ol.layer.Image({
+        source: new ol.source.ImageWMS({
+            ratio: 1,
+            url: 'http://localhost:8080/geoserver/QHBD/wms',
+            params: {
+                'FORMAT': format,
+                'VERSION': '1.1.1',
+                STYLES: '',
+                LAYERS: 'QHBD:binhduong_road',
+            }
+        })
+    });
 
     var bounds = [106.595402, 10.939735,
-    106.71948, 11.111376
+        106.71948, 11.111376
     ];
 
     var map = new ol.Map({
         target: 'map',
         layers: [
-        new ol.layer.Tile({
-            source: new ol.source.OSM()
-        }),
-        HanhChinhHuyen,
-        HanhChinhXa,
-        ThuaDat,
-
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            HanhChinhHuyen,
+            HanhChinhXa,
+            ThuaDat,
+            Duong
         ],
         overlays: [overlay],
         view: new ol.View({
@@ -86,12 +97,11 @@ $(document).ready(function() {
                 axisOrientation: 'neu'
             }),
             center: [0, 0],
-            zoom: 10
+            zoom: 13
         })
     });
 
-
-    var styles = { 'MultiPolygon': new ol.style.Style({ stroke: new ol.style.Stroke({ color: 'blue', width: 1 }) }) };
+    var styles = { 'MultiPolygon': new ol.style.Style({ stroke: new ol.style.Stroke({ color: 'yellow', width: 1 }) }) };
     var styleFunction = function(feature) {
         return styles[feature.getGeometry().getType()];
     };
@@ -153,54 +163,19 @@ $(document).ready(function() {
                         for (var i = 0; i < n.features.length; i++) {
                             var feature = n.features[i];
                             var featureAttr = feature.properties;
-                            $('#dientich').val(featureAttr["dientich"]);
-                            $('#soto').val(featureAttr["sohieutobando"]);
-                            $('#sothua').val(featureAttr["sothututhua"]);
-                            $('#kyhieu').val(featureAttr["kyhieumucdich"]);
-
-
-                            $('#diachied').val(featureAttr["diachi"]);
-
-                            $('#dientiched').val(featureAttr["dientich"]);
-                            $('#sotoed').val(featureAttr["sohieutobando"]);
-                            $('#kyhieued').val(featureAttr["kyhieumucdich"]);
-                            $('#tenkhudated').val(featureAttr["tenkhudat"]);
-                            $('#makhudated').val(featureAttr["makhudat"]);
-                            $('#sothuaed').val(featureAttr["sothututhua"]);
-                            $('#hientranged').val(featureAttr["hientrang"]);
-                            $('#maxa').val(featureAttr["maxa"]);
-                            $('#maxaed').val(featureAttr["maxa"]);
-
-                            $('#macbed').val(featureAttr["macb"]);
-                            $('#xoamakhudat').val(featureAttr["objectid"]);
-                            $('#noidungxoa').html("Bạn có chắc muốn xóa số thửa: "+featureAttr["sothututhua"]+" số tờ: "+featureAttr["sohieutobando"]+"?");
-
                             content += "<div class='spPopup'><b>Số thửa: </b>" + featureAttr["sothututhua"] + "</div>" +
-                            "<div class='spPopup'><b>Số tờ bản đồ: </b>" + featureAttr["sohieutobando"] + "</div>" +
-                            "<div class='spPopup'><b>Diện tích: </b>" + featureAttr["dientich"] + "</div>" +
-                            "<div class='spPopup'><b>Loại đất: </b>" + featureAttr["kyhieumucdich"] + "</div>" +
-                            "<div class='spPopup'><b>Tên Đất: </b>" + featureAttr["tenkhudat"] + "</div>" 
-                            if (featureAttr["makhudat"] !=null){
-
-
-                             content += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#editModal\">Sửa</button>" +
-                             "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#deleteModal\">Xóa</button>"
-                         }else{
-
-
-                             content += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#themModal\">Thêm</button>"
-                         }
-
-
-                     }
-                     content += "</div>";
-                     $("#popup-content").html(content);
-                     overlay.setPosition(evt.coordinate);
-                     var vectorSource = new ol.source.Vector({ features: (new ol.format.GeoJSON()).readFeatures(n) });
-                     vectorLayer.setSource(vectorSource);
-                 }
-             }
-         });
+                                "<div class='spPopup'><b>Số tờ bản đồ: </b>" + featureAttr["sohieutobando"] + "</div>" +
+                                "<div class='spPopup'><b>Diện tích: </b>" + featureAttr["dientich"] + "</div>" +
+                                "<div class='spPopup'><b>Loại đất: </b>" + featureAttr["kyhieumucdich"] + "</div>"
+                        }
+                        content += "</div>";
+                        $("#popup-content").html(content);
+                        overlay.setPosition(evt.coordinate);
+                        var vectorSource = new ol.source.Vector({ features: (new ol.format.GeoJSON()).readFeatures(n) });
+                        vectorLayer.setSource(vectorSource);
+                    }
+                }
+            });
         }
 
         if (startPoint.getGeometry() == null) {
@@ -213,11 +188,40 @@ $(document).ready(function() {
 
     });
 
+    $("#btnSolve").click(function() {
+        var startCoord = startPoint.getGeometry().getCoordinates();
+        var destCoord = destPoint.getGeometry().getCoordinates();
+        var params = {
+            LAYERS: 'QHBD:route',
+            FORMAT: 'image/png'
+        };
+        var viewparams = [
+            'x1:' + startCoord[0], 'y1:' + startCoord[1],
+            'x2:' + destCoord[0], 'y2:' + destCoord[1]
+        ];
+        params.viewparams = viewparams.join(';');
+        result = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+                url: 'http://localhost:8080/geoserver/QHBD/wms',
+                params: params
+            })
+        });
 
-$.ajax({
-    url: "http://localhost:8080/geoserver/QHBD/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=QHBD:hanhchinh_huyen&maxFeatures=50&outputFormat=json&jsoncallback=?",
-    contentType: 'application/json',
-    success: function() {
+        map.addLayer(result);
+    });
+
+    $("#btnReset").click(function() {
+        $("#txtPoint1").val("");
+        $("#txtPoint2").val("");
+        startPoint.setGeometry(null);
+        destPoint.setGeometry(null);
+        map.removeLayer(result);
+    });
+
+    $.ajax({
+        url: "http://localhost:8080/geoserver/QHBD/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=QHBD:hanhchinh_huyen&maxFeatures=50&outputFormat=json&jsoncallback=?",
+        contentType: 'application/json',
+        success: function() {
             //console.log('Thanh cong!');
         }
     }).done(function(data) {
@@ -250,7 +254,6 @@ $.ajax({
         });
 
         $('#area').on('change', function() {
-
             const featuresTemp = vectorLayer.getSource().getFeatures();
             featuresTemp.forEach((feature) => {
                 vectorLayer.getSource().removeFeature(feature);
@@ -272,33 +275,6 @@ $.ajax({
             });
 
         });
-            ///tu huyen suy ra xa
-        // $('#huyen').on('change', function() {
-        //     var document=$('#huyen').val();
-        //     console.log(document);
-        //     $.ajax({
-        //        url:"./layphuongxa",
-        //        cache:false,
-        //        type:"GET",
-        //      data:{"_token_":"{{csrf_token()}}","mahuyenxa":document},  /////mahuyenxa tu dat
-        //      success: function(response) {
-        //         var content="";
-        //         for(var i=0;i<response['xa1'].length;i++)
-        //         {
-        //             content+="<option value='"+response['xa1'][i]['maphuongxa']+"'>"+response['xa1'][i]['tenxa']+"</option>";
-
-        //         }
-
-        //         $('#xa').html(content);
-
-
-        //     },
-        //     error:function(request,status,error){
-        //         console.log("sai r"+error);
-        //     },
-        // })
-
-        // });
     }
 
     function loadFeatures2(data) {
@@ -316,7 +292,6 @@ $.ajax({
             if (v.get('tenxa') != null) {
                 s2 += "<option value='" + i + "'>" + v.get('tenxa') + "</option>";
             }
-
         });
         document.getElementById("wards").innerHTML = s2;
 
@@ -326,15 +301,12 @@ $.ajax({
                 vectorLayer.getSource().removeFeature(feature);
             });
             var tenhuyen = $('#area').find(":selected").text();
-            
-
             $.ajax({
                 url: "http://localhost:8080/geoserver/QHBD/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=QHBD:hanhchinh_xa&CQL_FILTER=tenhuyen='" + tenhuyen + "'&maxFeatures=50&outputFormat=json&jsoncallback=?",
                 contentType: 'application/json',
                 success: function() {}
             }).done(function(data3) {
                 // load vector source
-
                 vectorLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(data3));
                 const selected = $('#wards').val();
                 const extent = vectorLayer.getSource().getFeatures()[selected].getGeometry().getExtent();
@@ -358,12 +330,9 @@ $.ajax({
             contentType: 'application/json',
             success: function() {}
         }).done(function(data3) {
-            console.log(data3);
             vectorLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(data3));
             const selected = $('#wards').val();
             var maxa = vectorLayer.getSource().getFeatures()[selected].values_.maphuongxa;
-            $('#maxa').val(maxa);
-            $('#maxaed').val(maxa);
             $.ajax({
                 url: "http://localhost:8080/geoserver/QHBD/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=QHBD:thuadat_phumy&CQL_FILTER=sohieutobando=" + soto + " AND sothututhua=" + sothua + " AND maxa='" + maxa + "'&maxFeatures=50&outputFormat=json&jsoncallback=?",
                 contentType: 'application/json',
@@ -375,129 +344,14 @@ $.ajax({
                         var feature = data.features[i];
                         var featureAttr = feature.properties;
                         var coordinate = data.features[i].geometry.coordinates[0][0][0];
-                        
-                        $('#dientich').val(featureAttr["dientich"]);
-                        $('#soto').val(featureAttr["sohieutobando"]);
-                        $('#sothua').val(featureAttr["sothututhua"]);
-                        $('#kyhieu').val(featureAttr["kyhieumucdich"]);
-
-                        
-
-                        
-                        $('#dientiched').val(featureAttr["dientich"]);
-                        $('#sotoed').val(featureAttr["sohieutobando"]);
-                        $('#kyhieued').val(featureAttr["kyhieumucdich"]);
-                        $('#sothuaed').val(featureAttr["sothututhua"]);
-                        
-
-
-                        $('#xoamakhudat').val(featureAttr["objectid"]);
-                        $('#noidungxoa').html("Bạn có chắc muốn xóa số thửa: "+featureAttr["sothututhua"]+" số tờ: "+featureAttr["sohieutobando"]+"?");
-
                         content += "<div class='spPopup'><b>Số thửa: </b>" + featureAttr["sothututhua"] + "</div>" +
-                        "<div class='spPopup'><b>Số tờ bản đồ: </b>" + featureAttr["sohieutobando"] + "</div>" +
-                        "<div class='spPopup'><b>Diện tích: </b>" + featureAttr["dientich"] + "</div>" +
-                        "<div class='spPopup'><b>Loại đất: </b>" + featureAttr["kyhieumucdich"] + "</div>" +
-                        
-                        "<div class='spPopup'><b>Tên đất: </b> <strong id=\"tendat\"> </strong> </div>"+
-                        "<div class='spPopup'><b>Ngày quản lý: </b> <strong id=\"ngayquanly\"> </strong> </div>"+
-                        "<div class='spPopup'><b>Hiện trạng: </b> <strong id=\"hientrang\"> </strong> </div>"+
-                        "<div class='spPopup'><b>Địa chỉ: </b> <strong id=\"diachi\"> </strong> </div>"+
-                        "<div class='spPopup'><b>Mục đích: </b> <strong id=\"mucdich\"> </strong> </div>"+
-                        "<div class='spPopup'><b>Họ tên: </b> <strong id=\"canbo\"> </strong> </div>"+
+                            "<div class='spPopup'><b>Số tờ bản đồ: </b>" + featureAttr["sohieutobando"] + "</div>" +
+                            "<div class='spPopup'><b>Diện tích: </b>" + featureAttr["dientich"] + "</div>" +
+                            "<div class='spPopup'><b>Loại đất: </b>" + featureAttr["kyhieumucdich"] + "</div>"
 
-                        "<div id='btntonghop'></div>"
-
-
-
-                        
-                        var laymakhudat=featureAttr["objectid"];
-
-                        $.ajax({
-                           url:"./laymakhudat",
-                           cache:false,
-                           type:"GET",
-                         data:{"_token_":"{{csrf_token()}}","makhudat":laymakhudat},  /////mahuyenxa tu dat
-                         success: function(response) {
-                                console.log(response);
-                            var td=response['dat1'][0]['tenkhudat'];
-
-                            $('#diachied').val(response['dat1'][0]['diachi']);
-                            $('#tenkhudated').val(response['dat1'][0]['tenkhudat']);
-
-                            $('#hientranged').val(response['dat1'][0]['hientrang']);
-                            $('#macbed').val(response['dat1'][0]['macb']);
-                            ///
-                            $("#tendat").html(response['dat1'][0]['tenkhudat']);
-                            $("#ngayquanly").html(response['dat1'][0]['ngayquanly']);
-                            $("#hientrang").html(response['dat1'][0]['hientrang']);
-                            $("#diachi").html(response['dat1'][0]['diachi'])
-
-                            //lay du lieu cán bộ với mục đích
-                            var mamd=response['dat1'][0]['mamd'];
-                            var macb=response['dat1'][0]['macb'];
                             
-                            $.ajax({
-                                url:"./laymamucdich",
-                                cache:false,
-                                type:"GET",
-                         data:{"_token_":"{{csrf_token()}}","mamucdich":mamd,"macanbo":macb},  /////mahuyenxa tu dat
-                         success: function(response) {
-                            console.log('vaoham');
-                            var td=response['mucdich1'][0]['tenmucdich'];
-                            var cb=response['canbo1'][0]['ho'] +' '+ response['canbo1'][0]['ten'];
-                            $("#mucdich").html(response['mucdich1'][0]['tenmucdich']);
-                            $("#canbo").html(cb);
-                            // $("#ngayquanly").html(response['dat1'][0]['ngayquanly']);
-                            // $("#hientrang").html(response['dat1'][0]['hientrang']);
-                            // $("#diachi").html(response['dat1'][0]['diachi'])
-                        },
-                        error:function(request,status,error){
-                            console.log("sai ham du lieu mucdich"+error);
-                        },
-
-                    })
-
-                            //
-                        },
-                        error:function(request,status,error){
-                            console.log("sai r"+error);
-                        },
-
-                    })
-                        //hàm kiểm tra đất công
-                        $.ajax({
-                            url:"./kiemtradatcong",
-                            cache:false,
-                            type:"GET",
-                         data:{"_token_":"{{csrf_token()}}","makhudat":laymakhudat},  /////mahuyenxa tu dat
-                         success: function(response) {
-
-                            // var td=response['mucdich1'][0]['tenmucdich'];
-                            // var cb=response['canbo1'][0]['ho'] +' '+ response['canbo1'][0]['ten'];
-                            var tonghop='';
-                            if(response.kiemtra==1){
-
-                                tonghop += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#editModal\">Sửa</button>" + "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#deleteModal\">Xóa</button>";
-
-                            }
-                            else
-                            {
-                                tonghop += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#themModal\">Thêm</button>";
-
-                            }
-                            $("#btntonghop").html(tonghop);
-                    
-                        },
-                        error:function(request,status,error){
-                            console.log("sai ham du lieu mucdich"+error);
-                        },
-
-                    })
-                        
                     }
                     content += "</div>";
-
                     $("#popup-content").html(content);
                     var vectorSource = new ol.source.Vector({ features: (new ol.format.GeoJSON()).readFeatures(data) });
                     vectorLayer.setSource(vectorSource);
@@ -510,7 +364,6 @@ $.ajax({
                     alert("Số tờ hoặc số thửa không hợp lệ!");
                 }
             });
-});
-});
-
+        });
+    });
 });

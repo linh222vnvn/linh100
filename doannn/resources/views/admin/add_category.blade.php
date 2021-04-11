@@ -134,10 +134,6 @@
     <div class="modal-body">
         <input type='hidden' name="maxaed" id="maxaed">    
         <div class="form-group">
-            <label>Mã Khu Đất</label>
-            <input type="text" class="form-control" name="makhudated" id ="makhudated"placeholder="Enter email">
-        </div>
-        <div class="form-group">
             <label>Tên Đất</label>
             <input type="text" class="form-control" name="tenkhudated" id="tenkhudated" placeholder="Enter email">
         </div>
